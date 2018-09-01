@@ -537,10 +537,12 @@ func (s *AuthorizedDomain) MarshalJSON() ([]byte, error) {
 // AutomaticScaling: Automatic scaling is based on request rate,
 // response latencies, and other application metrics.
 type AutomaticScaling struct {
-	// CoolDownPeriod: Amount of time that the Autoscaler
+	// CoolDownPeriod: The time period that the Autoscaler
 	// (https://cloud.google.com/compute/docs/autoscaler/) should wait
-	// between changes to the number of virtual machines. Only applicable in
-	// the App Engine flexible environment.
+	// before it starts collecting information from a new instance. This
+	// prevents the autoscaler from collecting information when the instance
+	// is initializing, during which the collected usage would not be
+	// reliable. Only applicable in the App Engine flexible environment.
 	CoolDownPeriod string `json:"coolDownPeriod,omitempty"`
 
 	// CpuUtilization: Target scaling by CPU usage.
@@ -1004,12 +1006,12 @@ func (s *DebugInstanceRequest) MarshalJSON() ([]byte, error) {
 // Deployment: Code and application artifacts used to deploy a version
 // to App Engine.
 type Deployment struct {
-	// CloudBuildOptions: Options for any Google Cloud Container Builder
-	// builds created as a part of this deployment.Note that this is
-	// orthogonal to the build parameter, where the deployment depends on an
-	// already existing cloud build. These options will only be used if a
-	// new build is created, such as when deploying to the App Engine
-	// flexible environment using files or zip.
+	// CloudBuildOptions: Options for any Google Cloud Build builds created
+	// as a part of this deployment.Note that this is orthogonal to the
+	// build parameter, where the deployment depends on an already existing
+	// cloud build. These options will only be used if a new build is
+	// created, such as when deploying to the App Engine flexible
+	// environment using files or zip.
 	CloudBuildOptions *CloudBuildOptions `json:"cloudBuildOptions,omitempty"`
 
 	// Container: The Docker image for the container that runs the version.

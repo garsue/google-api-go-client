@@ -1264,7 +1264,7 @@
       }
     }
   },
-  "revision": "20180719",
+  "revision": "20180814",
   "rootUrl": "https://dialogflow.googleapis.com/",
   "schemas": {
     "GoogleCloudDialogflowV2Agent": {
@@ -1879,7 +1879,7 @@
           "type": "array"
         },
         "webhookState": {
-          "description": "Required. Indicates whether webhooks are enabled for the intent.",
+          "description": "Optional. Indicates whether webhooks are enabled for the intent.",
           "enum": [
             "WEBHOOK_STATE_UNSPECIFIED",
             "WEBHOOK_STATE_ENABLED",
@@ -2365,7 +2365,7 @@
       "id": "GoogleCloudDialogflowV2IntentTrainingPhrase",
       "properties": {
         "name": {
-          "description": "Required. The unique identifier of this training phrase.",
+          "description": "Output only. The unique identifier of this training phrase.",
           "type": "string"
         },
         "parts": {
@@ -2501,7 +2501,7 @@
             "description": "Properties of the object.",
             "type": "any"
           },
-          "description": "Optional. This field is set to the value of `QueryParameters.payload` field\npassed in the request.\n\nThis field is used for the telephony gateway. It should have a\nstructure similar to this JSON message:\n\u003cpre\u003e{\n \"telephony\": {\n \"caller_id\": \"+18558363987\"\n}\u003c/pre\u003e\nNote: The caller ID field (`caller_id`) will be in\n[E.164 format](https://en.wikipedia.org/wiki/E.164) and is not supported\nfor standard tier agents. When the telephony gateway is used with a\nstandard tier agent the `caller_id` field above will have a value of\n`REDACTED_IN_STANDARD_TIER_AGENT`.",
+          "description": "Optional. This field is set to the value of the `QueryParameters.payload`\nfield passed in the request. Some integrations that query a Dialogflow\nagent may provide additional information in the payload.\n\nIn particular for the Telephony Gateway this field has the form:\n\u003cpre\u003e{\n \"telephony\": {\n   \"caller_id\": \"+18558363987\"\n }\n}\u003c/pre\u003e\nNote: The caller ID field (`caller_id`) will be redacted for Standard\nEdition agents and populated with the caller ID in [E.164\nformat](https://en.wikipedia.org/wiki/E.164) for Enterprise Edition agents.",
           "type": "object"
         },
         "source": {
@@ -3096,7 +3096,7 @@
           "type": "array"
         },
         "webhookState": {
-          "description": "Required. Indicates whether webhooks are enabled for the intent.",
+          "description": "Optional. Indicates whether webhooks are enabled for the intent.",
           "enum": [
             "WEBHOOK_STATE_UNSPECIFIED",
             "WEBHOOK_STATE_ENABLED",
@@ -3619,7 +3619,7 @@
       "id": "GoogleCloudDialogflowV2beta1IntentTrainingPhrase",
       "properties": {
         "name": {
-          "description": "Required. The unique identifier of this training phrase.",
+          "description": "Output only. The unique identifier of this training phrase.",
           "type": "string"
         },
         "parts": {
@@ -3760,7 +3760,7 @@
             "description": "Properties of the object.",
             "type": "any"
           },
-          "description": "Optional. This field is set to the value of `QueryParameters.payload` field\npassed in the request.\n\nThis field is used for the telephony gateway. It should have a\nstructure similar to this JSON message:\n\u003cpre\u003e{\n \"telephony\": {\n   \"caller_id\": \"+18558363987\"\n }\n}\u003c/pre\u003e\nNote: The caller ID field (`caller_id`) will be in\n[E.164 format](https://en.wikipedia.org/wiki/E.164) and is only supported\nfor Enterprise Edition and not for Standard Edition agents. When the",
+          "description": "Optional. This field is set to the value of the `QueryParameters.payload`\nfield passed in the request. Some integrations that query a Dialogflow\nagent may provide additional information in the payload.\n\nIn particular for the Telephony Gateway this field has the form:\n\u003cpre\u003e{\n \"telephony\": {\n   \"caller_id\": \"+18558363987\"\n }\n}\u003c/pre\u003e\nNote: The caller ID field (`caller_id`) will be redacted for Standard\nEdition agents and populated with the caller ID in [E.164\nformat](https://en.wikipedia.org/wiki/E.164) for Enterprise Edition agents.",
           "type": "object"
         },
         "source": {

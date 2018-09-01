@@ -1425,7 +1425,7 @@ type GoogleCloudDialogflowV2Intent struct {
 	// trained on.
 	TrainingPhrases []*GoogleCloudDialogflowV2IntentTrainingPhrase `json:"trainingPhrases,omitempty"`
 
-	// WebhookState: Required. Indicates whether webhooks are enabled for
+	// WebhookState: Optional. Indicates whether webhooks are enabled for
 	// the intent.
 	//
 	// Possible values:
@@ -2366,7 +2366,7 @@ func (s *GoogleCloudDialogflowV2IntentParameter) MarshalJSON() ([]byte, error) {
 // GoogleCloudDialogflowV2IntentTrainingPhrase: Represents an example or
 // template that the agent is trained on.
 type GoogleCloudDialogflowV2IntentTrainingPhrase struct {
-	// Name: Required. The unique identifier of this training phrase.
+	// Name: Output only. The unique identifier of this training phrase.
 	Name string `json:"name,omitempty"`
 
 	// Parts: Required. The collection of training phrase parts (can be
@@ -2631,25 +2631,25 @@ func (s *GoogleCloudDialogflowV2ListSessionEntityTypesResponse) MarshalJSON() ([
 // contents of the original request that was passed to
 // the `[Streaming]DetectIntent` call.
 type GoogleCloudDialogflowV2OriginalDetectIntentRequest struct {
-	// Payload: Optional. This field is set to the value of
-	// `QueryParameters.payload` field
-	// passed in the request.
+	// Payload: Optional. This field is set to the value of the
+	// `QueryParameters.payload`
+	// field passed in the request. Some integrations that query a
+	// Dialogflow
+	// agent may provide additional information in the payload.
 	//
-	// This field is used for the telephony gateway. It should have
-	// a
-	// structure similar to this JSON message:
+	// In particular for the Telephony Gateway this field has the
+	// form:
 	// <pre>{
 	//  "telephony": {
-	//  "caller_id": "+18558363987"
+	//    "caller_id": "+18558363987"
+	//  }
 	// }</pre>
-	// Note: The caller ID field (`caller_id`) will be in
-	// [E.164 format](https://en.wikipedia.org/wiki/E.164) and is not
-	// supported
-	// for standard tier agents. When the telephony gateway is used with
-	// a
-	// standard tier agent the `caller_id` field above will have a value
-	// of
-	// `REDACTED_IN_STANDARD_TIER_AGENT`.
+	// Note: The caller ID field (`caller_id`) will be redacted for
+	// Standard
+	// Edition agents and populated with the caller ID in
+	// [E.164
+	// format](https://en.wikipedia.org/wiki/E.164) for Enterprise Edition
+	// agents.
 	Payload googleapi.RawMessage `json:"payload,omitempty"`
 
 	// Source: The source of this request, e.g., `google`, `facebook`,
@@ -3800,7 +3800,7 @@ type GoogleCloudDialogflowV2beta1Intent struct {
 	// trained on.
 	TrainingPhrases []*GoogleCloudDialogflowV2beta1IntentTrainingPhrase `json:"trainingPhrases,omitempty"`
 
-	// WebhookState: Required. Indicates whether webhooks are enabled for
+	// WebhookState: Optional. Indicates whether webhooks are enabled for
 	// the intent.
 	//
 	// Possible values:
@@ -4845,7 +4845,7 @@ func (s *GoogleCloudDialogflowV2beta1IntentParameter) MarshalJSON() ([]byte, err
 // GoogleCloudDialogflowV2beta1IntentTrainingPhrase: Represents an
 // example or template that the agent is trained on.
 type GoogleCloudDialogflowV2beta1IntentTrainingPhrase struct {
-	// Name: Required. The unique identifier of this training phrase.
+	// Name: Output only. The unique identifier of this training phrase.
 	Name string `json:"name,omitempty"`
 
 	// Parts: Required. The collection of training phrase parts (can be
@@ -5105,22 +5105,25 @@ func (s *GoogleCloudDialogflowV2beta1KnowledgeOperationMetadata) MarshalJSON() (
 // the contents of the original request that was passed to
 // the `[Streaming]DetectIntent` call.
 type GoogleCloudDialogflowV2beta1OriginalDetectIntentRequest struct {
-	// Payload: Optional. This field is set to the value of
-	// `QueryParameters.payload` field
-	// passed in the request.
+	// Payload: Optional. This field is set to the value of the
+	// `QueryParameters.payload`
+	// field passed in the request. Some integrations that query a
+	// Dialogflow
+	// agent may provide additional information in the payload.
 	//
-	// This field is used for the telephony gateway. It should have
-	// a
-	// structure similar to this JSON message:
+	// In particular for the Telephony Gateway this field has the
+	// form:
 	// <pre>{
 	//  "telephony": {
 	//    "caller_id": "+18558363987"
 	//  }
 	// }</pre>
-	// Note: The caller ID field (`caller_id`) will be in
-	// [E.164 format](https://en.wikipedia.org/wiki/E.164) and is only
-	// supported
-	// for Enterprise Edition and not for Standard Edition agents. When the
+	// Note: The caller ID field (`caller_id`) will be redacted for
+	// Standard
+	// Edition agents and populated with the caller ID in
+	// [E.164
+	// format](https://en.wikipedia.org/wiki/E.164) for Enterprise Edition
+	// agents.
 	Payload googleapi.RawMessage `json:"payload,omitempty"`
 
 	// Source: The source of this request, e.g., `google`, `facebook`,

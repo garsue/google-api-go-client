@@ -212,19 +212,23 @@ type InvoiceSummary struct {
 	AdditionalChargeSummaries []*InvoiceSummaryAdditionalChargeSummary `json:"additionalChargeSummaries,omitempty"`
 
 	// CustomerBalance: [required] Customer balance on this invoice. A
-	// positive amount means the customer is paying, a negative one means
+	// negative amount means the customer is paying, a positive one means
 	// the customer is receiving money. Note: the sum of merchant_balance,
 	// customer_balance and google_balance must always be zero.
+	//
+	// Furthermore the absolute value of this amount is expected to be equal
+	// to the sum of product amount and additional charges, minus
+	// promotions.
 	CustomerBalance *Amount `json:"customerBalance,omitempty"`
 
-	// GoogleBalance: [required] Google balance on this invoice. A positive
-	// amount means Google is paying, a negative one means Google is
+	// GoogleBalance: [required] Google balance on this invoice. A negative
+	// amount means Google is paying, a positive one means Google is
 	// receiving money. Note: the sum of merchant_balance, customer_balance
 	// and google_balance must always be zero.
 	GoogleBalance *Amount `json:"googleBalance,omitempty"`
 
 	// MerchantBalance: [required] Merchant balance on this invoice. A
-	// positive amount means the merchant is paying, a negative one means
+	// negative amount means the merchant is paying, a positive one means
 	// the merchant is receiving money. Note: the sum of merchant_balance,
 	// customer_balance and google_balance must always be zero.
 	MerchantBalance *Amount `json:"merchantBalance,omitempty"`
@@ -407,8 +411,9 @@ type OrderAddress struct {
 	// RecipientName: Name of the recipient.
 	RecipientName string `json:"recipientName,omitempty"`
 
-	// Region: Top-level administrative subdivision of the country (e.g.
-	// "CA").
+	// Region: Top-level administrative subdivision of the country. For
+	// example, a state like California ("CA") or a province like Quebec
+	// ("QC").
 	Region string `json:"region,omitempty"`
 
 	// StreetAddress: Street-level part of the address.
@@ -1804,10 +1809,7 @@ func (s *OrdersAdvanceTestOrderResponse) MarshalJSON() ([]byte, error) {
 }
 
 type OrdersCancelLineItemRequest struct {
-	// Amount: Amount to refund for the cancelation. Optional. If not set,
-	// Google will calculate the default based on the price and tax of the
-	// items involved. The amount must not be larger than the net amount
-	// left on the order.
+	// Amount: Deprecated. Please use amountPretax and amountTax instead.
 	Amount *Price `json:"amount,omitempty"`
 
 	// AmountPretax: Amount to refund for the cancelation. Optional. If not
@@ -1970,7 +1972,76 @@ func (s *OrdersCancelResponse) MarshalJSON() ([]byte, error) {
 	return gensupport.MarshalJSON(raw, s.ForceSendFields, s.NullFields)
 }
 
+type OrdersCancelTestOrderByCustomerRequest struct {
+	// Reason: The reason for the cancellation.
+	Reason string `json:"reason,omitempty"`
+
+	// ForceSendFields is a list of field names (e.g. "Reason") to
+	// unconditionally include in API requests. By default, fields with
+	// empty values are omitted from API requests. However, any non-pointer,
+	// non-interface field appearing in ForceSendFields will be sent to the
+	// server regardless of whether the field is empty or not. This may be
+	// used to include empty fields in Patch requests.
+	ForceSendFields []string `json:"-"`
+
+	// NullFields is a list of field names (e.g. "Reason") to include in API
+	// requests with the JSON null value. By default, fields with empty
+	// values are omitted from API requests. However, any field with an
+	// empty value appearing in NullFields will be sent to the server as
+	// null. It is an error if a field in this list has a non-empty value.
+	// This may be used to include null fields in Patch requests.
+	NullFields []string `json:"-"`
+}
+
+func (s *OrdersCancelTestOrderByCustomerRequest) MarshalJSON() ([]byte, error) {
+	type NoMethod OrdersCancelTestOrderByCustomerRequest
+	raw := NoMethod(*s)
+	return gensupport.MarshalJSON(raw, s.ForceSendFields, s.NullFields)
+}
+
+type OrdersCancelTestOrderByCustomerResponse struct {
+	// Kind: Identifies what kind of resource this is. Value: the fixed
+	// string "content#ordersCancelTestOrderByCustomerResponse".
+	Kind string `json:"kind,omitempty"`
+
+	// ServerResponse contains the HTTP response code and headers from the
+	// server.
+	googleapi.ServerResponse `json:"-"`
+
+	// ForceSendFields is a list of field names (e.g. "Kind") to
+	// unconditionally include in API requests. By default, fields with
+	// empty values are omitted from API requests. However, any non-pointer,
+	// non-interface field appearing in ForceSendFields will be sent to the
+	// server regardless of whether the field is empty or not. This may be
+	// used to include empty fields in Patch requests.
+	ForceSendFields []string `json:"-"`
+
+	// NullFields is a list of field names (e.g. "Kind") to include in API
+	// requests with the JSON null value. By default, fields with empty
+	// values are omitted from API requests. However, any field with an
+	// empty value appearing in NullFields will be sent to the server as
+	// null. It is an error if a field in this list has a non-empty value.
+	// This may be used to include null fields in Patch requests.
+	NullFields []string `json:"-"`
+}
+
+func (s *OrdersCancelTestOrderByCustomerResponse) MarshalJSON() ([]byte, error) {
+	type NoMethod OrdersCancelTestOrderByCustomerResponse
+	raw := NoMethod(*s)
+	return gensupport.MarshalJSON(raw, s.ForceSendFields, s.NullFields)
+}
+
 type OrdersCreateTestOrderRequest struct {
+	// Country: The  CLDR territory code of the country of the test order to
+	// create. Affects the currency and addresses of orders created via
+	// template_name, or the addresses of orders created via
+	// test_order.
+	//
+	// Acceptable values are:
+	// - "US"
+	// - "FR"  Defaults to US.
+	Country string `json:"country,omitempty"`
+
 	// TemplateName: The test order template to use. Specify as an
 	// alternative to testOrder as a shortcut for retrieving a template and
 	// then creating an order using that template.
@@ -1979,7 +2050,7 @@ type OrdersCreateTestOrderRequest struct {
 	// TestOrder: The test order to create.
 	TestOrder *TestOrder `json:"testOrder,omitempty"`
 
-	// ForceSendFields is a list of field names (e.g. "TemplateName") to
+	// ForceSendFields is a list of field names (e.g. "Country") to
 	// unconditionally include in API requests. By default, fields with
 	// empty values are omitted from API requests. However, any non-pointer,
 	// non-interface field appearing in ForceSendFields will be sent to the
@@ -1987,10 +2058,10 @@ type OrdersCreateTestOrderRequest struct {
 	// used to include empty fields in Patch requests.
 	ForceSendFields []string `json:"-"`
 
-	// NullFields is a list of field names (e.g. "TemplateName") to include
-	// in API requests with the JSON null value. By default, fields with
-	// empty values are omitted from API requests. However, any field with
-	// an empty value appearing in NullFields will be sent to the server as
+	// NullFields is a list of field names (e.g. "Country") to include in
+	// API requests with the JSON null value. By default, fields with empty
+	// values are omitted from API requests. However, any field with an
+	// empty value appearing in NullFields will be sent to the server as
 	// null. It is an error if a field in this list has a non-empty value.
 	// This may be used to include null fields in Patch requests.
 	NullFields []string `json:"-"`
@@ -2175,10 +2246,7 @@ func (s *OrdersCustomBatchRequestEntryCancel) MarshalJSON() ([]byte, error) {
 }
 
 type OrdersCustomBatchRequestEntryCancelLineItem struct {
-	// Amount: Amount to refund for the cancelation. Optional. If not set,
-	// Google will calculate the default based on the price and tax of the
-	// items involved. The amount must not be larger than the net amount
-	// left on the order.
+	// Amount: Deprecated. Please use amountPretax and amountTax instead.
 	Amount *Price `json:"amount,omitempty"`
 
 	// AmountPretax: Amount to refund for the cancelation. Optional. If not
@@ -2280,7 +2348,7 @@ func (s *OrdersCustomBatchRequestEntryInStoreRefundLineItem) MarshalJSON() ([]by
 }
 
 type OrdersCustomBatchRequestEntryRefund struct {
-	// Amount: The amount that is refunded.
+	// Amount: Deprecated. Please use amountPretax and amountTax instead.
 	Amount *Price `json:"amount,omitempty"`
 
 	// AmountPretax: The amount that is refunded. Either amount or
@@ -2403,8 +2471,9 @@ func (s *OrdersCustomBatchRequestEntryReturnLineItem) MarshalJSON() ([]byte, err
 }
 
 type OrdersCustomBatchRequestEntryReturnRefundLineItem struct {
-	// AmountPretax: The amount that is refunded. Optional, but if filled
-	// then both amountPretax and amountTax must be set.
+	// AmountPretax: The amount that is refunded. If omitted, refundless
+	// return is assumed (same as calling returnLineItem method). Optional,
+	// but if filled then both amountPretax and amountTax must be set.
 	AmountPretax *Price `json:"amountPretax,omitempty"`
 
 	// AmountTax: Tax amount that correspond to refund amount in
@@ -2696,9 +2765,10 @@ type OrdersCustomBatchResponseEntry struct {
 	// Errors: A list of errors defined if and only if the request failed.
 	Errors *Errors `json:"errors,omitempty"`
 
-	// ExecutionStatus: The status of the execution. Only defined if the
-	// method is not get or getByMerchantOrderId and if the request was
-	// successful.
+	// ExecutionStatus: The status of the execution. Only defined if
+	// - the request was successful; and
+	// - the method is not get, getByMerchantOrderId, or one of the test
+	// methods.
 	ExecutionStatus string `json:"executionStatus,omitempty"`
 
 	// Kind: Identifies what kind of resource this is. Value: the fixed
@@ -2929,7 +2999,7 @@ func (s *OrdersListResponse) MarshalJSON() ([]byte, error) {
 }
 
 type OrdersRefundRequest struct {
-	// Amount: The amount that is refunded.
+	// Amount: Deprecated. Please use amountPretax and amountTax instead.
 	Amount *Price `json:"amount,omitempty"`
 
 	// AmountPretax: The amount that is refunded. Either amount or
@@ -3172,8 +3242,9 @@ func (s *OrdersReturnLineItemResponse) MarshalJSON() ([]byte, error) {
 }
 
 type OrdersReturnRefundLineItemRequest struct {
-	// AmountPretax: The amount that is refunded. Optional, but if filled
-	// then both amountPretax and amountTax must be set.
+	// AmountPretax: The amount that is refunded. If omitted, refundless
+	// return is assumed (same as calling returnLineItem method). Optional,
+	// but if filled then both amountPretax and amountTax must be set.
 	AmountPretax *Price `json:"amountPretax,omitempty"`
 
 	// AmountTax: Tax amount that correspond to refund amount in
@@ -4343,7 +4414,9 @@ type OrderinvoicesCreaterefundinvoiceCall struct {
 
 // Createrefundinvoice: Creates a refund invoice for one or more
 // shipment groups, and triggers a refund for non-facilitated payment
-// orders.
+// orders. This can only be used for line items that have previously
+// been charged using createChargeInvoice. All amounts (except for the
+// summary) are incremental with respect to the previous invoice.
 func (r *OrderinvoicesService) Createrefundinvoice(merchantId uint64, orderId string, orderinvoicescreaterefundinvoicerequest *OrderinvoicesCreateRefundInvoiceRequest) *OrderinvoicesCreaterefundinvoiceCall {
 	c := &OrderinvoicesCreaterefundinvoiceCall{s: r.s, urlParams_: make(gensupport.URLParams)}
 	c.merchantId = merchantId
@@ -4441,7 +4514,7 @@ func (c *OrderinvoicesCreaterefundinvoiceCall) Do(opts ...googleapi.CallOption) 
 	}
 	return ret, nil
 	// {
-	//   "description": "Creates a refund invoice for one or more shipment groups, and triggers a refund for non-facilitated payment orders.",
+	//   "description": "Creates a refund invoice for one or more shipment groups, and triggers a refund for non-facilitated payment orders. This can only be used for line items that have previously been charged using createChargeInvoice. All amounts (except for the summary) are incremental with respect to the previous invoice.",
 	//   "httpMethod": "POST",
 	//   "id": "content.orderinvoices.createrefundinvoice",
 	//   "parameterOrder": [
@@ -5626,6 +5699,152 @@ func (c *OrdersCancellineitemCall) Do(opts ...googleapi.CallOption) (*OrdersCanc
 
 }
 
+// method id "content.orders.canceltestorderbycustomer":
+
+type OrdersCanceltestorderbycustomerCall struct {
+	s                                      *APIService
+	merchantId                             uint64
+	orderId                                string
+	orderscanceltestorderbycustomerrequest *OrdersCancelTestOrderByCustomerRequest
+	urlParams_                             gensupport.URLParams
+	ctx_                                   context.Context
+	header_                                http.Header
+}
+
+// Canceltestorderbycustomer: Sandbox only. Cancels a test order for
+// customer-initiated cancellation.
+func (r *OrdersService) Canceltestorderbycustomer(merchantId uint64, orderId string, orderscanceltestorderbycustomerrequest *OrdersCancelTestOrderByCustomerRequest) *OrdersCanceltestorderbycustomerCall {
+	c := &OrdersCanceltestorderbycustomerCall{s: r.s, urlParams_: make(gensupport.URLParams)}
+	c.merchantId = merchantId
+	c.orderId = orderId
+	c.orderscanceltestorderbycustomerrequest = orderscanceltestorderbycustomerrequest
+	return c
+}
+
+// Fields allows partial responses to be retrieved. See
+// https://developers.google.com/gdata/docs/2.0/basics#PartialResponse
+// for more information.
+func (c *OrdersCanceltestorderbycustomerCall) Fields(s ...googleapi.Field) *OrdersCanceltestorderbycustomerCall {
+	c.urlParams_.Set("fields", googleapi.CombineFields(s))
+	return c
+}
+
+// Context sets the context to be used in this call's Do method. Any
+// pending HTTP request will be aborted if the provided context is
+// canceled.
+func (c *OrdersCanceltestorderbycustomerCall) Context(ctx context.Context) *OrdersCanceltestorderbycustomerCall {
+	c.ctx_ = ctx
+	return c
+}
+
+// Header returns an http.Header that can be modified by the caller to
+// add HTTP headers to the request.
+func (c *OrdersCanceltestorderbycustomerCall) Header() http.Header {
+	if c.header_ == nil {
+		c.header_ = make(http.Header)
+	}
+	return c.header_
+}
+
+func (c *OrdersCanceltestorderbycustomerCall) doRequest(alt string) (*http.Response, error) {
+	reqHeaders := make(http.Header)
+	for k, v := range c.header_ {
+		reqHeaders[k] = v
+	}
+	reqHeaders.Set("User-Agent", c.s.userAgent())
+	var body io.Reader = nil
+	body, err := googleapi.WithoutDataWrapper.JSONReader(c.orderscanceltestorderbycustomerrequest)
+	if err != nil {
+		return nil, err
+	}
+	reqHeaders.Set("Content-Type", "application/json")
+	c.urlParams_.Set("alt", alt)
+	urls := googleapi.ResolveRelative(c.s.BasePath, "{merchantId}/testorders/{orderId}/cancelByCustomer")
+	urls += "?" + c.urlParams_.Encode()
+	req, _ := http.NewRequest("POST", urls, body)
+	req.Header = reqHeaders
+	googleapi.Expand(req.URL, map[string]string{
+		"merchantId": strconv.FormatUint(c.merchantId, 10),
+		"orderId":    c.orderId,
+	})
+	return gensupport.SendRequest(c.ctx_, c.s.client, req)
+}
+
+// Do executes the "content.orders.canceltestorderbycustomer" call.
+// Exactly one of *OrdersCancelTestOrderByCustomerResponse or error will
+// be non-nil. Any non-2xx status code is an error. Response headers are
+// in either
+// *OrdersCancelTestOrderByCustomerResponse.ServerResponse.Header or (if
+// a response was returned at all) in error.(*googleapi.Error).Header.
+// Use googleapi.IsNotModified to check whether the returned error was
+// because http.StatusNotModified was returned.
+func (c *OrdersCanceltestorderbycustomerCall) Do(opts ...googleapi.CallOption) (*OrdersCancelTestOrderByCustomerResponse, error) {
+	gensupport.SetOptions(c.urlParams_, opts...)
+	res, err := c.doRequest("json")
+	if res != nil && res.StatusCode == http.StatusNotModified {
+		if res.Body != nil {
+			res.Body.Close()
+		}
+		return nil, &googleapi.Error{
+			Code:   res.StatusCode,
+			Header: res.Header,
+		}
+	}
+	if err != nil {
+		return nil, err
+	}
+	defer googleapi.CloseBody(res)
+	if err := googleapi.CheckResponse(res); err != nil {
+		return nil, err
+	}
+	ret := &OrdersCancelTestOrderByCustomerResponse{
+		ServerResponse: googleapi.ServerResponse{
+			Header:         res.Header,
+			HTTPStatusCode: res.StatusCode,
+		},
+	}
+	target := &ret
+	if err := gensupport.DecodeResponse(target, res); err != nil {
+		return nil, err
+	}
+	return ret, nil
+	// {
+	//   "description": "Sandbox only. Cancels a test order for customer-initiated cancellation.",
+	//   "httpMethod": "POST",
+	//   "id": "content.orders.canceltestorderbycustomer",
+	//   "parameterOrder": [
+	//     "merchantId",
+	//     "orderId"
+	//   ],
+	//   "parameters": {
+	//     "merchantId": {
+	//       "description": "The ID of the account that manages the order. This cannot be a multi-client account.",
+	//       "format": "uint64",
+	//       "location": "path",
+	//       "required": true,
+	//       "type": "string"
+	//     },
+	//     "orderId": {
+	//       "description": "The ID of the test order to cancel.",
+	//       "location": "path",
+	//       "required": true,
+	//       "type": "string"
+	//     }
+	//   },
+	//   "path": "{merchantId}/testorders/{orderId}/cancelByCustomer",
+	//   "request": {
+	//     "$ref": "OrdersCancelTestOrderByCustomerRequest"
+	//   },
+	//   "response": {
+	//     "$ref": "OrdersCancelTestOrderByCustomerResponse"
+	//   },
+	//   "scopes": [
+	//     "https://www.googleapis.com/auth/content"
+	//   ]
+	// }
+
+}
+
 // method id "content.orders.createtestorder":
 
 type OrdersCreatetestorderCall struct {
@@ -6196,6 +6415,13 @@ func (r *OrdersService) Gettestordertemplate(merchantId uint64, templateName str
 	return c
 }
 
+// Country sets the optional parameter "country": The country of the
+// template to retrieve. Defaults to US.
+func (c *OrdersGettestordertemplateCall) Country(country string) *OrdersGettestordertemplateCall {
+	c.urlParams_.Set("country", country)
+	return c
+}
+
 // Fields allows partial responses to be retrieved. See
 // https://developers.google.com/gdata/docs/2.0/basics#PartialResponse
 // for more information.
@@ -6300,6 +6526,11 @@ func (c *OrdersGettestordertemplateCall) Do(opts ...googleapi.CallOption) (*Orde
 	//     "templateName"
 	//   ],
 	//   "parameters": {
+	//     "country": {
+	//       "description": "The country of the template to retrieve. Defaults to US.",
+	//       "location": "query",
+	//       "type": "string"
+	//     },
 	//     "merchantId": {
 	//       "description": "The ID of the account that should manage the order. This cannot be a multi-client account.",
 	//       "format": "uint64",
@@ -6350,7 +6581,8 @@ type OrdersInstorerefundlineitemCall struct {
 }
 
 // Instorerefundlineitem: Notifies that item return and refund was
-// handled directly in store.
+// handled directly by merchant outside of Google payments processing
+// (e.g. cash refund done in store).
 func (r *OrdersService) Instorerefundlineitem(merchantId uint64, orderId string, ordersinstorerefundlineitemrequest *OrdersInStoreRefundLineItemRequest) *OrdersInstorerefundlineitemCall {
 	c := &OrdersInstorerefundlineitemCall{s: r.s, urlParams_: make(gensupport.URLParams)}
 	c.merchantId = merchantId
@@ -6447,7 +6679,7 @@ func (c *OrdersInstorerefundlineitemCall) Do(opts ...googleapi.CallOption) (*Ord
 	}
 	return ret, nil
 	// {
-	//   "description": "Notifies that item return and refund was handled directly in store.",
+	//   "description": "Notifies that item return and refund was handled directly by merchant outside of Google payments processing (e.g. cash refund done in store).",
 	//   "httpMethod": "POST",
 	//   "id": "content.orders.instorerefundlineitem",
 	//   "parameterOrder": [
@@ -6809,7 +7041,7 @@ type OrdersRefundCall struct {
 	header_             http.Header
 }
 
-// Refund: Refund a portion of the order, up to the full amount paid.
+// Refund: Deprecated, please use returnRefundLineItem instead.
 func (r *OrdersService) Refund(merchantId uint64, orderId string, ordersrefundrequest *OrdersRefundRequest) *OrdersRefundCall {
 	c := &OrdersRefundCall{s: r.s, urlParams_: make(gensupport.URLParams)}
 	c.merchantId = merchantId
@@ -6905,7 +7137,7 @@ func (c *OrdersRefundCall) Do(opts ...googleapi.CallOption) (*OrdersRefundRespon
 	}
 	return ret, nil
 	// {
-	//   "description": "Refund a portion of the order, up to the full amount paid.",
+	//   "description": "Deprecated, please use returnRefundLineItem instead.",
 	//   "httpMethod": "POST",
 	//   "id": "content.orders.refund",
 	//   "parameterOrder": [

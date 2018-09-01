@@ -198,7 +198,7 @@
               ],
               "parameters": {
                 "filter": {
-                  "description": "A string for filtering Operations.\nIn v2alpha1, the following filter fields are supported\u0026#58;\n\n* createTime\u0026#58; The time this job was created\n* events\u0026#58; The set of event (names) that have occurred while running\n  the pipeline.  The \u0026#58; operator can be used to determine if a\n  particular event has occurred.\n* error\u0026#58; If the pipeline is running, this value is NULL.  Once the\n  pipeline finishes, the value is the standard Google error code.\n* labels.key or labels.\"key with space\" where key is a label key.\n\nIn v1 and v1alpha2, the following filter fields are supported\u0026#58;\n\n* projectId\u0026#58; Required. Corresponds to\n  OperationMetadata.projectId.\n* createTime\u0026#58; The time this job was created, in seconds from the\n  [epoch](http://en.wikipedia.org/wiki/Unix_time). Can use `\u003e=` and/or `\u003c=`\n  operators.\n* status\u0026#58; Can be `RUNNING`, `SUCCESS`, `FAILURE`, or `CANCELED`. Only\n  one status may be specified.\n* labels.key where key is a label key.\n\nExamples\u0026#58;\n\n* `projectId = my-project AND createTime \u003e= 1432140000`\n* `projectId = my-project AND createTime \u003e= 1432140000 AND createTime \u003c= 1432150000 AND status = RUNNING`\n* `projectId = my-project AND labels.color = *`\n* `projectId = my-project AND labels.color = red`",
+                  "description": "A string for filtering Operations.\nIn v2alpha1, the following filter fields are supported\u0026#58;\n\n* createTime\u0026#58; The time this job was created\n* events\u0026#58; The set of event (names) that have occurred while running\n  the pipeline.  The \u0026#58; operator can be used to determine if a\n  particular event has occurred.\n* error\u0026#58; If the pipeline is running, this value is NULL.  Once the\n  pipeline finishes, the value is the standard Google error code.\n* labels.key or labels.\"key with space\" where key is a label key.\n* done\u0026#58; If the pipeline is running, this value is false. Once the\n  pipeline finishes, the value is true.\n\nIn v1 and v1alpha2, the following filter fields are supported\u0026#58;\n\n* projectId\u0026#58; Required. Corresponds to\n  OperationMetadata.projectId.\n* createTime\u0026#58; The time this job was created, in seconds from the\n  [epoch](http://en.wikipedia.org/wiki/Unix_time). Can use `\u003e=` and/or `\u003c=`\n  operators.\n* status\u0026#58; Can be `RUNNING`, `SUCCESS`, `FAILURE`, or `CANCELED`. Only\n  one status may be specified.\n* labels.key where key is a label key.\n\nExamples\u0026#58;\n\n* `projectId = my-project AND createTime \u003e= 1432140000`\n* `projectId = my-project AND createTime \u003e= 1432140000 AND createTime \u003c= 1432150000 AND status = RUNNING`\n* `projectId = my-project AND labels.color = *`\n* `projectId = my-project AND labels.color = red`",
                   "location": "query",
                   "type": "string"
                 },
@@ -267,7 +267,7 @@
       }
     }
   },
-  "revision": "20180725",
+  "revision": "20180807",
   "rootUrl": "https://genomics.googleapis.com/",
   "schemas": {
     "Accelerator": {
@@ -406,6 +406,10 @@
         "result": {
           "$ref": "Status",
           "description": "The operation has finished with the given result."
+        },
+        "workerStatus": {
+          "$ref": "WorkerStatus",
+          "description": "Data about the status of the worker VM."
         }
       },
       "type": "object"
@@ -550,6 +554,23 @@
         },
         "type": {
           "description": "The Compute Engine disk type. If unspecified, `pd-standard` is used.",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "DiskStatus": {
+      "description": "The status of a disk on a VM.",
+      "id": "DiskStatus",
+      "properties": {
+        "freeSpaceBytes": {
+          "description": "Free disk space.",
+          "format": "uint64",
+          "type": "string"
+        },
+        "totalSpaceBytes": {
+          "description": "Total disk space.",
+          "format": "uint64",
           "type": "string"
         }
       },
@@ -1151,6 +1172,39 @@
         },
         "zone": {
           "description": "The zone the worker was running in.",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "WorkerStatus": {
+      "description": "The status of the worker VM.",
+      "id": "WorkerStatus",
+      "properties": {
+        "attachedDisks": {
+          "additionalProperties": {
+            "$ref": "DiskStatus"
+          },
+          "description": "Status of attached disks.",
+          "type": "object"
+        },
+        "bootDisk": {
+          "$ref": "DiskStatus",
+          "description": "Status of the boot disk."
+        },
+        "freeRamBytes": {
+          "description": "Free RAM.",
+          "format": "uint64",
+          "type": "string"
+        },
+        "totalRamBytes": {
+          "description": "Total RAM.",
+          "format": "uint64",
+          "type": "string"
+        },
+        "uptimeSeconds": {
+          "description": "System uptime.",
+          "format": "int64",
           "type": "string"
         }
       },
